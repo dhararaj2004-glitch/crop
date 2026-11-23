@@ -8,13 +8,27 @@ if not ((3, 10) <= sys.version_info[:2] <= (3, 13)):
     print("  ! TensorFlow 2.20 needs Python 3.10 - 3.13 (you have a different version).")
     ok = False
 
-for mod in ["streamlit", "tensorflow", "cv2", "numpy", "PIL"]:
+for mod in ["streamlit", "cv2", "numpy", "PIL"]:
     try:
         __import__(mod)
         print(f"  ok  {mod}")
     except Exception:
         print(f"  MISSING  {mod}  -> pip install -r requirements.txt")
         ok = False
+
+# Check for ML runtime (ai-edge-litert, tflite-runtime, or tensorflow)
+has_runtime = False
+for mod in ["ai_edge_litert", "tflite_runtime", "tensorflow"]:
+    try:
+        __import__(mod)
+        print(f"  ok  {mod} (ML runtime)")
+        has_runtime = True
+        break
+    except Exception:
+        pass
+if not has_runtime:
+    print("  MISSING  ML runtime (ai_edge_litert or tensorflow) -> pip install ai-edge-litert")
+    ok = False
 
 here = os.path.dirname(os.path.abspath(__file__))
 m = os.path.join(here, "model")

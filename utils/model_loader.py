@@ -25,10 +25,10 @@ class Predictor:
     """Wraps either the .keras model or the .tflite model behind one predict()."""
 
     def __init__(self):
-        import tensorflow as tf
-
         self.class_names = load_class_names()
         if os.path.exists(KERAS_PATH):
+            import tensorflow as tf
+
             self.model = tf.keras.models.load_model(KERAS_PATH)
             self.kind = "keras"
         else:
@@ -36,7 +36,26 @@ class Predictor:
                 header = f.read(8)
             if len(header) < 8 or header[4:8] != b"TFL3":
                 raise RuntimeError("leaf_model.tflite is not a valid TensorFlow Lite model")
-            self.interp = tf.lite.Interpreter(model_path=TFLITE_PATH)
+
+            Interpreter = None
+            try:
+                from ai_edge_litert.interpreter import Interpreter
+            except ImportError:
+                try:
+                    from tflite_runtime.interpreter import Interpreter
+                except ImportError:
+                    try:
+                        import tensorflow as tf
+                        Interpreter = tf.lite.Interpreter
+                    except ImportError:
+                        pass
+
+            if Interpreter is None:
+                raise ImportError(
+                    "No TFLite runtime found. Please install ai-edge-litert (pip install ai-edge-litert) or tensorflow."
+                )
+
+            self.interp = Interpreter(model_path=TFLITE_PATH)
             self.interp.allocate_tensors()
             self.inp = self.interp.get_input_details()[0]
             self.out = self.interp.get_output_details()[0]
