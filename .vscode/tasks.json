@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Streamlit app",
+      "type": "shell",
+      "command": "streamlit run app.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "Check setup",
+      "type": "shell",
+      "command": "python check_setup.py",
+      "problemMatcher": []
+    }
+  ]
+}
