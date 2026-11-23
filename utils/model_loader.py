@@ -32,6 +32,10 @@ class Predictor:
             self.model = tf.keras.models.load_model(KERAS_PATH)
             self.kind = "keras"
         else:
+            with open(TFLITE_PATH, "rb") as f:
+                header = f.read(8)
+            if len(header) < 8 or header[4:8] != b"TFL3":
+                raise RuntimeError("leaf_model.tflite is not a valid TensorFlow Lite model")
             self.interp = tf.lite.Interpreter(model_path=TFLITE_PATH)
             self.interp.allocate_tensors()
             self.inp = self.interp.get_input_details()[0]

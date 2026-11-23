@@ -4,8 +4,8 @@ import sys
 
 ok = True
 print(f"Python {sys.version.split()[0]}")
-if not ((3, 10) <= sys.version_info[:2] <= (3, 12)):
-    print("  ! TensorFlow needs Python 3.10 - 3.12 (you have a different version).")
+if not ((3, 10) <= sys.version_info[:2] <= (3, 13)):
+    print("  ! TensorFlow 2.20 needs Python 3.10 - 3.13 (you have a different version).")
     ok = False
 
 for mod in ["streamlit", "tensorflow", "cv2", "numpy", "PIL"]:
